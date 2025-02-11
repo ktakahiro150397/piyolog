@@ -9,14 +9,6 @@ class PiyoLogParserBase:
     def __init__(self):
         pass
 
-    def parse_file(self, file_path: str) -> list[PiyoLogDayRecord]:
-        # Implement this method in the subclass
-        raise NotImplementedError()
-
-    def parse_str(self, input_str: str) -> list[PiyoLogDayRecord]:
-        # Implement this method in the subclass
-        raise NotImplementedError()
-
     def parse_record_line(self, base_date: date, line: str) -> PiyoLogRecord:
         # Split line by 3 spaces
         line_parts = line.split("   ")

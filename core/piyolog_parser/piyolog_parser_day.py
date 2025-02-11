@@ -11,10 +11,6 @@ class PiyoLogParserDay(PiyoLogParserBase):
     def __init__(self):
         super().__init__()
 
-    def parse_file(self, file_path: str) -> list[PiyoLogDayRecord]:
-        # Implement this method in the subclass
-        raise NotImplementedError()
-
     def parse_str(self, input_str: str) -> PiyoLogDayRecord:
         # 日付、レコード、サマリー、メモの順で分割
         ret = PiyoLogDayRecord()

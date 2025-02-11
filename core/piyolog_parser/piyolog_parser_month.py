@@ -12,10 +12,6 @@ class PiyoLogParserMonth(PiyoLogParserBase):
     def __init__(self):
         super().__init__()
 
-    def parse_file(self, file_path: str) -> list[PiyoLogDayRecord]:
-        # Implement this method in the subclass
-        raise NotImplementedError()
-
     def parse_str(self, input_str: str) -> list[PiyoLogDayRecord]:
 
         record_str_list = input_str.split("----------")
