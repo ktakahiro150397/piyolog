@@ -4,7 +4,7 @@ from typing import Any
 
 
 @dataclass
-class PiyologRecord:
+class PiyoLogRecord:
     """ぴよログで入力された単一のレコード"""
 
     date: datetime
@@ -13,7 +13,7 @@ class PiyologRecord:
     record_type: Any
     """記録の種類"""
 
-    additional_record_data: Any
+    additional_record_data: str
     """存在する場合、記録の追加情報。存在しない場合はNone"""
 
     record_memo: str

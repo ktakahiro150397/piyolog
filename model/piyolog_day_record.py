@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from sqlite3 import Date
 from model.piyolog_day_summary import PiyoLogDaySummary
-from model.piyolog_record import PiyologRecord
+from model.piyolog_record import PiyoLogRecord
 
 
 @dataclass
@@ -14,7 +14,7 @@ class PiyoLogDayRecord:
     birthDayCount: int
     """生まれてからの日数"""
 
-    records: list[PiyologRecord]
+    records: list[PiyoLogRecord]
     """記録のリスト"""
 
     daily_memo: str
