@@ -13,6 +13,10 @@ class PiyoLogParserBase:
         # Implement this method in the subclass
         raise NotImplementedError()
 
+    def parse_str(self, input_str: str) -> list[PiyoLogDayRecord]:
+        # Implement this method in the subclass
+        raise NotImplementedError()
+
     def parse_record_line(self, base_date: date, line: str) -> PiyoLogRecord:
         # Split line by 3 spaces
         line_parts = line.split("   ")
@@ -45,6 +49,6 @@ class PiyoLogParserBase:
             ret.additional_record_data = type_parts[1].replace("(", "").replace(")", "")
 
         # Extract memo
-        ret.record_memo = line_parts[2]
+        ret.record_memo = line_parts[2].strip("\n")
 
         return ret

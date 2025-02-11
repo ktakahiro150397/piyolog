@@ -11,9 +11,6 @@ class PiyoLogDayRecord:
     date: Date
     """日付"""
 
-    birthDayCount: int
-    """生まれてからの日数"""
-
     records: list[PiyoLogRecord]
     """記録のリスト"""
 
@@ -22,3 +19,10 @@ class PiyoLogDayRecord:
 
     summary: PiyoLogDaySummary
     """1日のサマリー"""
+
+    def __init__(self):
+        self.date = None
+        self.records = []
+        self.daily_memo = ""
+        self.summary = PiyoLogDaySummary()
+        pass
