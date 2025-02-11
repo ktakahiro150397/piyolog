@@ -34,7 +34,7 @@ def test_parse_line_formula():
     # Assert
     assert record.date == datetime(2024, 12, 1, 1, 50, 0)
     assert record.record_type == "ミルク"
-    assert record.additional_record_data == "100ml"
+    assert record.additional_record_data == "120ml"
     assert record.record_memo == ""
 
 

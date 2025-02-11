@@ -10,7 +10,7 @@ class PiyoLogRecord:
     date: datetime
     """データ日付"""
 
-    record_type: Any
+    record_type: str
     """記録の種類"""
 
     additional_record_data: str
@@ -18,3 +18,9 @@ class PiyoLogRecord:
 
     record_memo: str
     """記録メモ"""
+
+    def __init__(self):
+        self.date = None
+        self.record_type = ""
+        self.additional_record_data = ""
+        self.record_memo = ""
