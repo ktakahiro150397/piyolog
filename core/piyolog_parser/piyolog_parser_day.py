@@ -88,7 +88,7 @@ class PiyoLogParserDay(PiyoLogParserBase):
         reEx = r"(?=\d{2}:\d{2})"
 
         records = re.split(reEx, record_part)
-
+        # TODO : 2024/12/15 メモ中の時刻表記に対応する
         ret = [
             self.parse_record_line(base_date, record)
             for record in records
