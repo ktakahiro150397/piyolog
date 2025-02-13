@@ -18,7 +18,7 @@ class PiyoLogParserMonth(PiyoLogParserBase):
 
         pattern = r"^\n\d{4}/\d{1,2}/\d{1,2}"
         record_str_list = [
-            record_str.removeprefix("\n")
+            record_str
             for record_str in record_str_list
             if (record_str.strip() and re.match(pattern, record_str))
         ]

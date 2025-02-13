@@ -13,6 +13,9 @@ class PiyoLogParserBase:
         # Split line by 3 spaces
         line_parts = line.split("   ")
 
+        if len(line_parts) == 2 :
+            line_parts.append("")
+
         if len(line_parts) != 3:
             raise ValueError(f"Invalid line format: {line}")
 
