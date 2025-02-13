@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 from io import StringIO
 import re
+from core.consts.piyolog_parser_consts import PIYOLOG_EXPORT_FILE_DELIMITER
 from core.piyolog_parser.piyolog_parser_base import PiyoLogParserBase
 from model.piyolog_day_record import PiyoLogDayRecord
 from model.piyolog_day_summary import PiyoLogDaySummary
@@ -106,7 +107,7 @@ class PiyoLogParserDay(PiyoLogParserBase):
     ) -> list[PiyoLogDayRecord]:
         # まさか、自力でエスケープを!?
         # 0 スペースを$に変換
-        record_part = record_part.replace("   ", "$")
+        record_part = record_part.replace(PIYOLOG_EXPORT_FILE_DELIMITER, "$")
 
         # 1 スペースをダブルクォートで囲む
         record_part = record_part.replace("$", "\"$\"")
@@ -148,7 +149,7 @@ class PiyoLogParserDay(PiyoLogParserBase):
         import csv
         parsed_list = [row for row in csv.reader(StringIO(record_csv_str),delimiter='$')]
 
-        records = [ "   ".join(row) for row in parsed_list]
+        records = [ PIYOLOG_EXPORT_FILE_DELIMITER.join(row) for row in parsed_list]
 
         ret = [
             self.parse_record_line(base_date, record)
