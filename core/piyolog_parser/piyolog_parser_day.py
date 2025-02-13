@@ -113,10 +113,10 @@ class PiyoLogParserDay(PiyoLogParserBase):
         record_part = record_part.replace("$", "\"$\"")
 
         # 2 行ごとに、\d{2}:\d{2}で始まっている場合は文頭にクォートを付与
-        timeEx = r'^(\d{2}:\d{2}).*'
+        timeEx = r'^(\d{2}:\d{2}).*\$.*'
         record_lines = [ line for line in record_part.split("\n")]
         for i,line in enumerate(record_lines):
-            if re.match(timeEx, line):
+            if re.match(timeEx, line) :
                 # 行ごとに、\d{2}:\d{2}で始まっている場合は文頭にクォートを付与
                 record_lines[i] = "\"" + record_lines[i]
 
