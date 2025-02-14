@@ -17,6 +17,12 @@ class PiyoLogParserBase:
         if len(line_parts) == 2 :
             line_parts.append("")
 
+        if len(line_parts) > 3:
+            # インデックス2以降はPIYOLOG_EXPORT_FILE_DELIMITERで再結合する
+            # メモ中にデリミタが含まれている
+            line_parts[2] = PIYOLOG_EXPORT_FILE_DELIMITER.join(line_parts[2:])
+            del line_parts[3:]
+
         if len(line_parts) != 3:
             raise ValueError(f"Invalid line format: {line}")
 
