@@ -47,14 +47,14 @@ async def main():
 
             repo:PiyologRepositoryBase = PiyologRepositoryMySql(conn)
             
-            # for month_data in month_data_list:
-            #     for day_data in month_data:
-            #         repo.delete_insert_piyolog(day_data)
+            for month_data in month_data_list:
+                for day_data in month_data:
+                    repo.delete_insert_piyolog(day_data)
 
-            get_date = date(2024,12,10)
-            day_data = repo.select_piyolog(get_date)
+            # get_date = date(2024,12,10)
+            # day_data = repo.select_piyolog(get_date)
 
-            logger.debug("selected data: %s",day_data)
+            # logger.debug("selected data: %s",day_data)
 
         else:
             logger.error("Failed to connect MySQL database")
