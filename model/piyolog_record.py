@@ -24,3 +24,12 @@ class PiyoLogRecord:
         self.record_type = ""
         self.additional_record_data = ""
         self.record_memo = ""
+
+    def insert_param_tuple(self):
+        return (
+            self.date,
+            self.record_type,
+            self.additional_record_data,
+            self.record_memo,
+        )
+    

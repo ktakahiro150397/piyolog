@@ -35,3 +35,14 @@ class PiyoLogDaySummary:
         self.sleep_duration = timedelta()
         self.pee_count = 0
         self.poo_count = 0
+
+    def insert_param_tuple(self):
+        return (
+            self.bleast_feed_time_left,
+            self.bleast_feed_time_right,
+            self.formula_count,
+            self.formula_total_amount,
+            self.sleep_duration.seconds,
+            self.pee_count,
+            self.poo_count
+        )

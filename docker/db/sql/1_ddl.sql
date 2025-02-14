@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS day_record_summary (
 CREATE TABLE IF NOT EXISTS records (
     id INT PRIMARY KEY AUTO_INCREMENT,
     day_record_id INT,
+    day_record_date datetime,
     record_type TEXT NOT NULL,
     additional_record_data TEXT,
     record_memo TEXT,

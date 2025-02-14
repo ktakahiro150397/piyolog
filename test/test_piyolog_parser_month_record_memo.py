@@ -95,6 +95,30 @@ UNITTEST_ASSERT_STR_MEMO_HHMM = """----------
 
 """
 
+UNITTEST_ASSERT_STR_MEMO_SPACES = """----------
+2025/1/2(木)
+あかさん (0歳3か月7日)
+
+07:45   起きる (10時間15分)   
+07:55   ミルク 180ml   
+20:20   遊ぶ   ドラえもん見る。
+20:35 腹減ってきて泣いてる。
+みよこでも   腹減りは誤魔化せないのか…
+20:35   ミルク 160ml   
+21:30   寝る   たまに「ふぇえぇ😭」って言うてるけど、たぶん寝てる。
+
+母乳合計　　   左 0分 / 右 0分
+ミルク合計　   5回 800ml
+睡眠合計　　   10時間30分
+おしっこ合計   2回
+うんち合計　   3回
+
+だんだん授乳回数が5回になってきている？
+ここ2〜3日、夜間起きひんからやな。
+今日はめっちゃうんこしたな💩
+
+"""
+
 def test_parse_record_contains_date_memo_final():
     # Arrange
     parser = PiyoLogParserMonth()
@@ -146,3 +170,16 @@ def test_parse_record_contains_hhmm():
     assert record[0].records[2].record_memo == """ドラえもん見る。
 20:35 腹減ってきて泣いてる。
 みよこでも腹減りは誤魔化せないのか…"""
+
+def test_parse_record_contains_space():
+    # Arrange
+    parser = PiyoLogParserMonth()
+
+    # Act
+    record = parser.parse_str(UNITTEST_ASSERT_STR_MEMO_SPACES)
+
+    # Assert
+    assert len(record[0].records) == 5
+    assert record[0].records[2].record_memo == """ドラえもん見る。
+20:35 腹減ってきて泣いてる。
+みよこでも   腹減りは誤魔化せないのか…"""

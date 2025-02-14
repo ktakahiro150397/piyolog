@@ -15,7 +15,7 @@ services:
       - ./docker/db/sql:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
-    command: mysqld
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
   grafana:
     image: grafana/grafana-enterprise
     container_name: grafana
