@@ -29,3 +29,19 @@ INSERT INTO day_record_summary (
     %s
 );
 """
+
+RECORDS_INSERT_SQL = """
+INSERT INTO records (
+    day_record_id,
+    day_record_date,
+    record_type,
+    additional_record_data,
+    record_memo
+) VALUES (
+    %s,
+    %s,
+    %s,
+    %s,
+    %s
+);
+"""

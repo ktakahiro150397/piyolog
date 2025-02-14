@@ -19,6 +19,7 @@ class PiyologRepositoryMySql(PiyologRepositoryBase):
             header_id = self.select_piyolog_id(data.date)
             if header_id is not None:
                 cursor.execute(delete_queries.DAY_RECORD_SUMMARY_DELETE_SQL, (header_id,))
+                cursor.execute(delete_queries.RECOREDS_DELETE_SQL, (header_id,))
                 cursor.execute(delete_queries.DAY_RECORD_DELETE_SQL, (header_id,))
                 logger.debug("Data deleted: %s", header_id)
 
@@ -30,6 +31,11 @@ class PiyologRepositoryMySql(PiyologRepositoryBase):
             # サマリーのインサート
             params = data.summary.insert_param_tuple()
             cursor.execute(insert_queries.DAY_RECORD_INSERT_SUMMARY_SQL, (inserted_id,) + params)
+
+            # レコードのインサート
+            for record in data.records:
+                params = record.insert_param_tuple()
+                cursor.execute(insert_queries.RECORDS_INSERT_SQL, (inserted_id,) + params)
 
             self.conn.commit()
 
