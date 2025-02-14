@@ -1,785 +1,1103 @@
 {
-    "__inputs": [
-      {
-        "name": "DS_MYSQL",
-        "label": "mysql",
-        "description": "",
-        "type": "datasource",
-        "pluginId": "mysql",
-        "pluginName": "MySQL"
-      }
-    ],
-    "__elements": {},
-    "__requires": [
-      {
-        "type": "grafana",
-        "id": "grafana",
-        "name": "Grafana",
-        "version": "11.5.1"
-      },
-      {
-        "type": "datasource",
-        "id": "mysql",
-        "name": "MySQL",
-        "version": "11.5.0-pre"
-      },
-      {
-        "type": "panel",
-        "id": "timeseries",
-        "name": "Time series",
-        "version": ""
-      }
-    ],
-    "annotations": {
-      "list": [
-        {
-          "builtIn": 1,
-          "datasource": {
-            "type": "grafana",
-            "uid": "-- Grafana --"
-          },
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "type": "dashboard"
-        }
-      ]
+  "__inputs": [
+    {
+      "name": "DS_MYSQL",
+      "label": "mysql",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "mysql",
+      "pluginName": "MySQL"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.5.1"
     },
-    "editable": true,
-    "fiscalYearStartMonth": 0,
-    "graphTooltip": 0,
-    "id": null,
-    "links": [],
-    "panels": [
+    {
+      "type": "datasource",
+      "id": "mysql",
+      "name": "MySQL",
+      "version": "11.5.0-pre"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
       {
+        "builtIn": 1,
         "datasource": {
-          "type": "mysql",
-          "uid": "${DS_MYSQL}"
+          "type": "grafana",
+          "uid": "-- Grafana --"
         },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisBorderShow": false,
-              "axisCenteredZero": false,
-              "axisColorMode": "text",
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "barWidthFactor": 0.6,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "insertNulls": false,
-              "lineInterpolation": "smooth",
-              "lineStyle": {
-                "fill": "solid"
-              },
-              "lineWidth": 3,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "normal"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "displayName": "睡眠時間",
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            },
-            "unit": "dtdurations"
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 0
-        },
-        "id": 2,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "pluginVersion": "11.5.1",
-        "targets": [
-          {
-            "dataset": "piyolog",
-            "editorMode": "builder",
-            "format": "table",
-            "rawSql": "SELECT id, date FROM piyolog.day_record ORDER BY id DESC LIMIT 1000 ",
-            "refId": "A",
-            "sql": {
-              "columns": [
-                {
-                  "parameters": [
-                    {
-                      "name": "id",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                },
-                {
-                  "parameters": [
-                    {
-                      "name": "date",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                }
-              ],
-              "groupBy": [
-                {
-                  "property": {
-                    "type": "string"
-                  },
-                  "type": "groupBy"
-                }
-              ],
-              "limit": 1000,
-              "orderBy": {
-                "property": {
-                  "name": [
-                    "id"
-                  ],
-                  "type": "string"
-                },
-                "type": "property"
-              },
-              "orderByDirection": "DESC"
-            },
-            "table": "day_record",
-            "datasource": {
-              "type": "mysql",
-              "uid": "${DS_MYSQL}"
-            }
-          },
-          {
-            "dataset": "piyolog",
-            "datasource": {
-              "type": "mysql",
-              "uid": "${DS_MYSQL}"
-            },
-            "editorMode": "builder",
-            "format": "table",
-            "hide": false,
-            "rawSql": "SELECT day_record_id AS \"id\", sleep_duration_seconds FROM piyolog.day_record_summary LIMIT 1000 ",
-            "refId": "B",
-            "sql": {
-              "columns": [
-                {
-                  "alias": "\"id\"",
-                  "parameters": [
-                    {
-                      "name": "day_record_id",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                },
-                {
-                  "parameters": [
-                    {
-                      "name": "sleep_duration_seconds",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                }
-              ],
-              "groupBy": [
-                {
-                  "property": {
-                    "type": "string"
-                  },
-                  "type": "groupBy"
-                }
-              ],
-              "limit": 1000
-            },
-            "table": "day_record_summary"
-          }
-        ],
-        "title": "睡眠時間",
-        "transformations": [
-          {
-            "id": "joinByField",
-            "options": {
-              "byField": "id",
-              "mode": "outer"
-            }
-          },
-          {
-            "id": "organize",
-            "options": {
-              "excludeByName": {
-                "id": true
-              },
-              "includeByName": {},
-              "indexByName": {},
-              "renameByName": {}
-            }
-          }
-        ],
-        "type": "timeseries"
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
       },
-      {
-        "datasource": {
-          "type": "mysql",
-          "uid": "${DS_MYSQL}"
-        },
-        "description": "日別の回数グラフ",
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
             },
-            "custom": {
-              "axisBorderShow": false,
-              "axisCenteredZero": false,
-              "axisColorMode": "text",
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "barWidthFactor": 0.6,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
               },
-              "insertNulls": false,
-              "lineInterpolation": "smooth",
-              "lineStyle": {
-                "fill": "solid"
-              },
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "line"
+              {
+                "color": "red",
+                "value": 80
               }
-            },
-            "fieldMinMax": false,
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "blue",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 0
-                }
-              ]
-            }
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "うんち"
-              },
-              "properties": [
-                {
-                  "id": "color",
-                  "value": {
-                    "fixedColor": "#ff8c00",
-                    "mode": "fixed"
-                  }
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "おしっこ"
-              },
-              "properties": [
-                {
-                  "id": "color",
-                  "value": {
-                    "fixedColor": "super-light-yellow",
-                    "mode": "fixed"
-                  }
-                }
-              ]
-            }
-          ]
+            ]
+          }
         },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 12,
-          "y": 0
-        },
-        "id": 1,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "day_record_date"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 169
+              }
+            ]
           },
-          "timezone": [
-            "browser"
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "record_type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 213
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 15,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
           ],
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
+          "show": false
         },
-        "pluginVersion": "11.5.1",
-        "targets": [
-          {
-            "dataset": "piyolog",
-            "datasource": {
-              "type": "mysql",
-              "uid": "${DS_MYSQL}"
-            },
-            "editorMode": "builder",
-            "format": "table",
-            "hide": false,
-            "rawSql": "SELECT day_record_id AS \"id\", pee_count, poo_count FROM piyolog.day_record_summary LIMIT 1000 ",
-            "refId": "日サマリー",
-            "sql": {
-              "columns": [
-                {
-                  "alias": "\"id\"",
-                  "parameters": [
-                    {
-                      "name": "day_record_id",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                },
-                {
-                  "parameters": [
-                    {
-                      "name": "pee_count",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                },
-                {
-                  "parameters": [
-                    {
-                      "name": "poo_count",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                }
-              ],
-              "groupBy": [
-                {
-                  "property": {
-                    "type": "string"
-                  },
-                  "type": "groupBy"
-                }
-              ],
-              "limit": 1000
-            },
-            "table": "day_record_summary"
-          },
-          {
-            "dataset": "piyolog",
-            "datasource": {
-              "type": "mysql",
-              "uid": "${DS_MYSQL}"
-            },
-            "editorMode": "builder",
-            "format": "table",
-            "hide": false,
-            "rawSql": "SELECT date, id FROM piyolog.day_record ORDER BY date DESC LIMIT 1000 ",
-            "refId": "ヘッダー",
-            "sql": {
-              "columns": [
-                {
-                  "parameters": [
-                    {
-                      "name": "date",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                },
-                {
-                  "parameters": [
-                    {
-                      "name": "id",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                }
-              ],
-              "groupBy": [
-                {
-                  "property": {
-                    "type": "string"
-                  },
-                  "type": "groupBy"
-                }
-              ],
-              "limit": 1000,
-              "orderBy": {
-                "property": {
-                  "name": [
-                    "date"
-                  ],
-                  "type": "string"
-                },
-                "type": "property"
-              },
-              "orderByDirection": "DESC"
-            },
-            "table": "day_record"
-          }
-        ],
-        "title": "うんち・おしっこカウント",
-        "transformations": [
-          {
-            "id": "joinByField",
-            "options": {
-              "byField": "id",
-              "mode": "outer"
-            }
-          },
-          {
-            "id": "organize",
-            "options": {
-              "excludeByName": {
-                "id": true
-              },
-              "includeByName": {},
-              "indexByName": {},
-              "renameByName": {
-                "date": "",
-                "pee_count": "おしっこ",
-                "poo_count": "うんち"
-              }
-            }
-          }
-        ],
-        "type": "timeseries"
+        "showHeader": true,
+        "sortBy": []
       },
-      {
-        "datasource": {
-          "type": "mysql",
-          "uid": "${DS_MYSQL}"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisBorderShow": false,
-              "axisCenteredZero": false,
-              "axisColorMode": "text",
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "barWidthFactor": 0.6,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "piyolog",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  day_record_date, \r\n  CONCAT(record_type,IF(additional_record_data <> '',CONCAT(\"(\",additional_record_data,\")\"),\"\")) AS record_type, \r\n  record_memo\r\nFROM piyolog.records \r\nWHERE day_record_date <= now()\r\nORDER BY day_record_date DESC \r\nLIMIT 30 ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "day_record_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
               },
-              "insertNulls": false,
-              "lineInterpolation": "smooth",
-              "lineWidth": 2,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
+              {
+                "parameters": [
+                  {
+                    "name": "record_type",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
               },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
+              {
+                "parameters": [
+                  {
+                    "name": "additional_record_data",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
               },
-              "thresholdsStyle": {
-                "mode": "off"
+              {
+                "parameters": [
+                  {
+                    "name": "record_memo",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
               }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "formula_total_amount"
-              },
-              "properties": [
-                {
-                  "id": "color",
-                  "value": {
-                    "fixedColor": "super-light-yellow",
-                    "mode": "fixed"
-                  }
-                }
-              ]
-            },
-            {
-              "__systemRef": "hideSeriesFrom",
-              "matcher": {
-                "id": "byNames",
-                "options": {
-                  "mode": "exclude",
-                  "names": [
-                    "formula_total_amount"
-                  ],
-                  "prefix": "All except:",
-                  "readOnly": true
-                }
-              },
-              "properties": [
-                {
-                  "id": "custom.hideFrom",
-                  "value": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": true
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 8
-        },
-        "id": 3,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "pluginVersion": "11.5.1",
-        "targets": [
-          {
-            "dataset": "piyolog",
-            "datasource": {
-              "type": "mysql",
-              "uid": "${DS_MYSQL}"
-            },
-            "editorMode": "builder",
-            "format": "table",
-            "hide": false,
-            "rawSql": "SELECT date, id FROM piyolog.day_record ORDER BY date DESC LIMIT 500 ",
-            "refId": "A",
-            "sql": {
-              "columns": [
-                {
-                  "parameters": [
-                    {
-                      "name": "date",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                },
-                {
-                  "parameters": [
-                    {
-                      "name": "id",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                }
-              ],
-              "groupBy": [
-                {
-                  "property": {
-                    "type": "string"
-                  },
-                  "type": "groupBy"
-                }
-              ],
-              "limit": 500,
-              "orderBy": {
+            ],
+            "groupBy": [
+              {
                 "property": {
-                  "name": [
-                    "date"
-                  ],
                   "type": "string"
                 },
-                "type": "property"
-              },
-              "orderByDirection": "DESC"
-            },
-            "table": "day_record"
-          },
-          {
-            "dataset": "piyolog",
-            "datasource": {
-              "type": "mysql",
-              "uid": "${DS_MYSQL}"
-            },
-            "editorMode": "builder",
-            "format": "table",
-            "hide": false,
-            "rawSql": "SELECT formula_total_amount, day_record_id AS \"id\" FROM piyolog.day_record_summary LIMIT 1000 ",
-            "refId": "B",
-            "sql": {
-              "columns": [
-                {
-                  "parameters": [
-                    {
-                      "name": "formula_total_amount",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                },
-                {
-                  "alias": "\"id\"",
-                  "parameters": [
-                    {
-                      "name": "day_record_id",
-                      "type": "functionParameter"
-                    }
-                  ],
-                  "type": "function"
-                }
-              ],
-              "groupBy": [
-                {
-                  "property": {
-                    "type": "string"
-                  },
-                  "type": "groupBy"
-                }
-              ],
-              "limit": 1000
-            },
-            "table": "day_record_summary"
-          }
-        ],
-        "title": "ミルク量",
-        "transformations": [
-          {
-            "id": "joinByField",
-            "options": {
-              "byField": "id",
-              "mode": "outer"
-            }
-          },
-          {
-            "id": "organize",
-            "options": {
-              "excludeByName": {
-                "id": true
-              },
-              "includeByName": {},
-              "indexByName": {},
-              "renameByName": {
-                "formula_total_amount": "ミルク量(mL)"
+                "type": "groupBy"
               }
+            ],
+            "limit": 30,
+            "orderBy": {
+              "property": {
+                "name": [
+                  "day_record_date"
+                ],
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "orderByDirection": "DESC",
+            "whereJsonTree": {
+              "children1": [],
+              "id": "aa8b9b8a-0123-4456-b89a-b19502233d21",
+              "type": "group"
+            }
+          },
+          "table": "records",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          }
+        }
+      ],
+      "title": "ぴよログ入力内容",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "day_record_date"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 183
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 15,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "piyolog",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  day_record_date, \r\n  CONCAT(record_type,IF(additional_record_data <> '',CONCAT(\"(\",additional_record_data,\")\"),\"\")) AS record_type, \r\n  record_memo\r\nFROM piyolog.records \r\nWHERE day_record_date > now()\r\nORDER BY day_record_date DESC \r\nLIMIT 30",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "day_record_date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "record_type",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "additional_record_data",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "record_memo",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 30,
+            "orderBy": {
+              "property": {
+                "name": [
+                  "day_record_date"
+                ],
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "orderByDirection": "DESC",
+            "whereJsonTree": {
+              "children1": [],
+              "id": "aa8b9b8a-0123-4456-b89a-b19502233d21",
+              "type": "group"
+            }
+          },
+          "table": "records",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          }
+        }
+      ],
+      "title": "これからの予定",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 3,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "睡眠時間",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dtdurations"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 13,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "piyolog",
+          "editorMode": "builder",
+          "format": "table",
+          "rawSql": "SELECT id, date FROM piyolog.day_record ORDER BY id DESC LIMIT 1000 ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 1000,
+            "orderBy": {
+              "property": {
+                "name": [
+                  "id"
+                ],
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "orderByDirection": "DESC"
+          },
+          "table": "day_record",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          }
+        },
+        {
+          "dataset": "piyolog",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT day_record_id AS \"id\", sleep_duration_seconds FROM piyolog.day_record_summary LIMIT 1000 ",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "alias": "\"id\"",
+                "parameters": [
+                  {
+                    "name": "day_record_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "sleep_duration_seconds",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 1000
+          },
+          "table": "day_record_summary"
+        }
+      ],
+      "title": "睡眠時間",
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "id",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "id": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "description": "日別の回数グラフ",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "うんち"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ff8c00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "おしっこ"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 13,
+        "y": 8
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "timezone": [
+          "browser"
+        ],
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "piyolog",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT day_record_id AS \"id\", pee_count, poo_count FROM piyolog.day_record_summary LIMIT 1000 ",
+          "refId": "日サマリー",
+          "sql": {
+            "columns": [
+              {
+                "alias": "\"id\"",
+                "parameters": [
+                  {
+                    "name": "day_record_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "pee_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "poo_count",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 1000
+          },
+          "table": "day_record_summary"
+        },
+        {
+          "dataset": "piyolog",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT date, id FROM piyolog.day_record ORDER BY date DESC LIMIT 1000 ",
+          "refId": "ヘッダー",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 1000,
+            "orderBy": {
+              "property": {
+                "name": [
+                  "date"
+                ],
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "orderByDirection": "DESC"
+          },
+          "table": "day_record"
+        }
+      ],
+      "title": "うんち・おしっこカウント",
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "id",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "id": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "date": "",
+              "pee_count": "おしっこ",
+              "poo_count": "うんち"
             }
           }
-        ],
-        "type": "timeseries"
-      }
-    ],
-    "refresh": "",
-    "schemaVersion": 40,
-    "tags": [],
-    "templating": {
-      "list": []
+        }
+      ],
+      "type": "timeseries"
     },
-    "time": {
-      "from": "now-30d",
-      "to": "now"
-    },
-    "timepicker": {},
-    "timezone": "browser",
-    "title": "成長記録",
-    "uid": "eeczsyfqwqdq8a",
-    "version": 9,
-    "weekStart": ""
-  }
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "formula_total_amount"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "formula_total_amount"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 13,
+        "x": 0,
+        "y": 16
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "piyolog",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT date, id FROM piyolog.day_record ORDER BY date DESC LIMIT 500 ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 500,
+            "orderBy": {
+              "property": {
+                "name": [
+                  "date"
+                ],
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "orderByDirection": "DESC"
+          },
+          "table": "day_record"
+        },
+        {
+          "dataset": "piyolog",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "builder",
+          "format": "table",
+          "hide": false,
+          "rawSql": "SELECT formula_total_amount, day_record_id AS \"id\" FROM piyolog.day_record_summary LIMIT 1000 ",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "formula_total_amount",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "alias": "\"id\"",
+                "parameters": [
+                  {
+                    "name": "day_record_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 1000
+          },
+          "table": "day_record_summary"
+        }
+      ],
+      "title": "ミルク量",
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "id",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "id": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "formula_total_amount": "ミルク量(mL)"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "成長記録",
+  "uid": "eeczsyfqwqdq8a",
+  "version": 15,
+  "weekStart": ""
+}
