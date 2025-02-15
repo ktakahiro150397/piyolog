@@ -27,34 +27,39 @@ SCOPES = ["https://www.googleapis.com/auth/drive"]
 
 def clear_dir(dir_path: str):
     for file in os.listdir(dir_path):
-        os.remove(os.path.join(dir_path, file))
+        if file.endswith(".txt"):
+            os.remove(os.path.join(dir_path, file))
 
 
 def get_google_drive_service() -> googleapiclient.discovery.Resource:
+    logger.info("Create Google Drive service")
+
     # Credentialの取得または作成
     if os.path.exists("token.json"):
+        logger.info("Use existing token.json")
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
 
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
+        # If there are no (valid) credentials available, let the user log in.
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "client_secret.json", SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
+    else:
+        logger.info("Create new token.json")
+        flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+        creds = flow.run_local_server()
 
-    service = build('drive', 'v3', credentials=creds)
+    # Save the credentials for the next run
+    with open("token.json", "w") as token:
+        token.write(creds.to_json())
+
+    service = build("drive", "v3", credentials=creds)
 
     logger.info("Google Drive service is created")
     return service
 
 
-def get_google_drive_file(service: googleapiclient.discovery.Resource, filename: str, file_id: str):
+def get_google_drive_file(
+    service: googleapiclient.discovery.Resource, filename: str, file_id: str
+):
     request = service.files().get_media(fileId=file_id)
     fh = open(f"{src_drive_dir}/{filename}", "wb")
     downloader = googleapiclient.http.MediaIoBaseDownload(fh, request)
@@ -66,7 +71,9 @@ def get_google_drive_file(service: googleapiclient.discovery.Resource, filename:
 
 
 def delete_google_drive_file(service: googleapiclient.discovery.Resource, file_id: str):
-    service.files().delete(fileId=file_id,).execute()
+    service.files().delete(
+        fileId=file_id,
+    ).execute()
     logger.debug(f"Delete file: {file_id}")
 
 
@@ -74,11 +81,14 @@ drive_service = get_google_drive_service()
 
 
 async def main():
-    previous_process_time = datetime.now()
+    previous_process_time = None
     while True:
-        if (datetime.now() - previous_process_time).seconds < 60:
-            logger.debug("Wait for 20 seconds...")
-            await asyncio.sleep(20)
+        if (
+            not previous_process_time is None
+            and (datetime.now() - previous_process_time).seconds < 60
+        ):
+            logger.debug("Wait for 10 seconds...")
+            await asyncio.sleep(10)
             continue
 
         previous_process_time = datetime.now()
@@ -94,29 +104,33 @@ async def retrieve_data():
         clear_dir(src_drive_dir)
 
         # マイドライブ > ぴよログ 以下のファイル一覧を取得
-        results = drive_service.files().list(
-            includeItemsFromAllDrives=True,
-            supportsAllDrives=True,
-            q="'1-3jwmeBYEzZpKqWXhDO3ziMq3H2aLQYO' in parents "
-            "and trashed = false",
-            orderBy='createdTime desc',
-            fields='files(id, name, createdTime)',
-            pageToken=None
-        ).execute()
+        results = (
+            drive_service.files()
+            .list(
+                includeItemsFromAllDrives=True,
+                supportsAllDrives=True,
+                q="'1-3jwmeBYEzZpKqWXhDO3ziMq3H2aLQYO' in parents "
+                "and trashed = false",
+                orderBy="createdTime desc",
+                fields="files(id, name, createdTime)",
+                pageToken=None,
+            )
+            .execute()
+        )
 
         files = results["files"]
-        files.sort(key=lambda x: x['name'])
+        files.sort(key=lambda x: x["name"])
 
         logger.info(f"Google Drive file count: {len(files)}")
 
         # ファイル名ごとに、最も更新日付の新しいものを取得
-        grouped_by_filename = {key: list(group) for key, group in groupby(
-            files, key=lambda x: x['name'])}
+        grouped_by_filename = {
+            key: list(group) for key, group in groupby(files, key=lambda x: x["name"])
+        }
 
         # キーごとに作成日時でソート
         for key in grouped_by_filename.keys():
-            grouped_by_filename[key].sort(
-                key=lambda x: x["createdTime"], reverse=True)
+            grouped_by_filename[key].sort(key=lambda x: x["createdTime"], reverse=True)
 
         # ドライブからファイルをダウンロード
         for key in grouped_by_filename.keys():
@@ -149,10 +163,7 @@ async def retrieve_data():
 
         # MySQLに接続
         conn = mysql.connector.connect(
-            host="db",
-            database="piyolog",
-            user="docker",
-            password="docker"
+            host="db", database="piyolog", user="docker", password="docker"
         )
         conn.autocommit = False
 
@@ -183,6 +194,7 @@ async def retrieve_data():
         logger.error(e, exc_info=True)
     finally:
         logger.info("Process is finished")
+
 
 if __name__ == "__main__":
     asyncio.run(main())
