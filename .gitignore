@@ -2,3 +2,6 @@ __pycache__/
 .DS_Store
 docker/db/data/
 *.log
+.env
+credentials.json
+token.json

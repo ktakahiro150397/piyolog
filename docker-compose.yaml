@@ -24,6 +24,12 @@ services:
       - '3000:3000'
     volumes:
       - grafana_storage:/var/lib/grafana
+  retriever:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: retriever
+    restart: always
 
 volumes:
   db_data:
