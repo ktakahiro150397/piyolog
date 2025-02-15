@@ -1,12 +1,11 @@
 import asyncio
-from datetime import date
+from datetime import datetime
 import os
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 import googleapiclient
 import googleapiclient.discovery
 from core.piyolog_parser.piyolog_parser_month import PiyoLogParserMonth
@@ -71,13 +70,28 @@ def delete_google_drive_file(service: googleapiclient.discovery.Resource, file_i
     logger.debug(f"Delete file: {file_id}")
 
 
+drive_service = get_google_drive_service()
+
+
 async def main():
+    previous_process_time = datetime.now()
+    while True:
+        if (datetime.now() - previous_process_time).seconds < 60:
+            logger.debug("Wait for 20 seconds...")
+            await asyncio.sleep(20)
+            continue
+
+        previous_process_time = datetime.now()
+        logger.info("Starting retrieve process...")
+        await retrieve_data()
+        logger.info("Retrieve process complete")
+
+
+async def retrieve_data():
     try:
         file_list = []
 
         clear_dir(src_drive_dir)
-
-        drive_service = get_google_drive_service()
 
         # マイドライブ > ぴよログ 以下のファイル一覧を取得
         results = drive_service.files().list(
@@ -135,7 +149,7 @@ async def main():
 
         # MySQLに接続
         conn = mysql.connector.connect(
-            host="localhost",
+            host="db",
             database="piyolog",
             user="docker",
             password="docker"
