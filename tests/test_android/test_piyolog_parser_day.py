@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from core.enum.parser_os_type import ParserOSType
 from core.piyolog_parser.piyolog_parser_day import PiyoLogParserDay
 
 UNITTEST_ASSERT_STR = """2024/12/1(日)
@@ -29,7 +30,7 @@ E赤ちゃんにしてから、ミルクの吐き戻しが少なくなった気�
 
 def test_parse_record_date():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
@@ -40,7 +41,7 @@ def test_parse_record_date():
 
 def test_parse_record_count():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
@@ -51,7 +52,7 @@ def test_parse_record_count():
 
 def test_parse_record_daily_memo():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
@@ -65,7 +66,7 @@ def test_parse_record_daily_memo():
 
 def test_parse_record_summary_bleast_feed_time_left():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
@@ -76,7 +77,7 @@ def test_parse_record_summary_bleast_feed_time_left():
 
 def test_parse_record_summary_bleast_feed_time_right():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
@@ -87,7 +88,7 @@ def test_parse_record_summary_bleast_feed_time_right():
 
 def test_parse_record_summary_formula_count():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
@@ -98,7 +99,7 @@ def test_parse_record_summary_formula_count():
 
 def test_parse_record_summary_formula_formula_total_amount():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
@@ -109,7 +110,7 @@ def test_parse_record_summary_formula_formula_total_amount():
 
 def test_parse_record_summary_formula_formula_total_amount():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
@@ -120,7 +121,7 @@ def test_parse_record_summary_formula_formula_total_amount():
 
 def test_parse_record_summary_pee_count():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
@@ -131,7 +132,7 @@ def test_parse_record_summary_pee_count():
 
 def test_parse_record_summary_poo_count():
     # Arrange
-    parser = PiyoLogParserDay()
+    parser = PiyoLogParserDay(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR)
