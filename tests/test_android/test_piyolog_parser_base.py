@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from core.enum.parser_os_type import ParserOSType
 from core.piyolog_parser.piyolog_parser_base import PiyoLogParserBase
 
 UNITTEST_BASE_DATE = date(2024, 12, 1)
@@ -9,7 +10,7 @@ def test_parse_line_wakeup():
 
     # Arrange
     test_line = "01:45   起きる (2時間5分)  "
-    parser = PiyoLogParserBase()
+    parser = PiyoLogParserBase(os=ParserOSType.android)
 
     # Act
     record = parser.parse_record_line(UNITTEST_BASE_DATE, test_line)
@@ -26,7 +27,7 @@ def test_parse_line_formula():
 
     # Arrange
     test_line = "01:50   ミルク 120ml  "
-    parser = PiyoLogParserBase()
+    parser = PiyoLogParserBase(os=ParserOSType.android)
 
     # Act
     record = parser.parse_record_line(UNITTEST_BASE_DATE, test_line)
@@ -43,7 +44,7 @@ def test_parse_line_sleep():
 
     # Arrange
     test_line = "02:00   寝る  "
-    parser = PiyoLogParserBase()
+    parser = PiyoLogParserBase(os=ParserOSType.android)
 
     # Act
     record = parser.parse_record_line(UNITTEST_BASE_DATE, test_line)
@@ -60,7 +61,7 @@ def test_parse_line_memo():
 
     # Arrange
     test_line = "13:00   メモ  ぐずぐず。抱っこしたかな泣く。重すぎる。"
-    parser = PiyoLogParserBase()
+    parser = PiyoLogParserBase(os=ParserOSType.android)
 
     # Act
     record = parser.parse_record_line(UNITTEST_BASE_DATE, test_line)
@@ -77,7 +78,7 @@ def test_parse_line_temperature():
 
     # Arrange
     test_line = "13:55   体温 36.6°C  "
-    parser = PiyoLogParserBase()
+    parser = PiyoLogParserBase(os=ParserOSType.android)
 
     # Act
     record = parser.parse_record_line(UNITTEST_BASE_DATE, test_line)
