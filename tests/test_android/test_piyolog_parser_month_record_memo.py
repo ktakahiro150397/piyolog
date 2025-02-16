@@ -1,8 +1,10 @@
 from datetime import date, timedelta
+from core.enum.parser_os_type import ParserOSType
 from core.piyolog_parser.piyolog_parser_day import PiyoLogParserDay
 from core.piyolog_parser.piyolog_parser_month import PiyoLogParserMonth
 
-UNITTEST_ASSERT_STR_MEMO_FINAL = """----------
+UNITTEST_ASSERT_STR_MEMO_FINAL = """ぴよログ-2024年12月
+----------
 2024/12/1(日)
 あかさん (2か月5日)
 
@@ -11,7 +13,6 @@ UNITTEST_ASSERT_STR_MEMO_FINAL = """----------
 02:00   寝る  
 04:45   起きる (2時間45分)  
 04:50   ミルク 140ml  
-22:05   起きる (0時間15分)   
 22:05   起きる (0時間15分)  
 23:00   寝る  22:40 ちょこちょこ起きるなぁ。
 「ひぁあっ！！」って、思い出したように男梅になるのやめておくれ。もうお風呂入るよ。深い睡眠に移行するんだ智也💩
@@ -26,7 +27,8 @@ E赤ちゃんにしてから、ミルクの吐き戻しが少なくなった気�
 
 """
 
-UNITTEST_ASSERT_STR_MEMO_MIDDLE = """----------
+UNITTEST_ASSERT_STR_MEMO_MIDDLE = """ぴよログ-2024年12月
+----------
 2024/12/1(日)
 あかさん (2か月5日)
 
@@ -35,7 +37,6 @@ UNITTEST_ASSERT_STR_MEMO_MIDDLE = """----------
 02:00   寝る  
 04:45   起きる (2時間45分)  
 04:50   ミルク 140ml  
-22:05   起きる (0時間15分)   
 22:05   起きる (0時間15分)  
 23:00   寝る  22:40 ちょこちょこ起きるなぁ。
 「ひぁあっ！！」って、思い出したように男梅になるのやめておくれ。もうお風呂入るよ。深い睡眠に移行するんだ智也💩
@@ -51,7 +52,8 @@ E赤ちゃんにしてから、ミルクの吐き戻しが少なくなった気�
 
 """
 
-UNITTEST_ASSERT_STR_MEMO_MULTILINE = """----------
+UNITTEST_ASSERT_STR_MEMO_MULTILINE = """ぴよログ-2024年12月
+----------
 2024/12/1(日)
 あかさん (2か月5日)
 
@@ -73,7 +75,8 @@ E赤ちゃんにしてから、ミルクの吐き戻しが少なくなった気�
 
 """
 
-UNITTEST_ASSERT_STR_MEMO_HHMM = """----------
+UNITTEST_ASSERT_STR_MEMO_HHMM = """ぴよログ-2024年12月
+----------
 2025/1/2(木)
 あかさん (3か月7日)
 
@@ -97,7 +100,8 @@ UNITTEST_ASSERT_STR_MEMO_HHMM = """----------
 
 """
 
-UNITTEST_ASSERT_STR_MEMO_SPACES = """----------
+UNITTEST_ASSERT_STR_MEMO_SPACES = """ぴよログ-2024年12月
+----------
 2025/1/2(木)
 あかさん (3か月7日)
 
@@ -121,7 +125,8 @@ UNITTEST_ASSERT_STR_MEMO_SPACES = """----------
 
 """
 
-UNITTEST_ASSERT_STR_MEMO_SPACES_ANDROID = """----------
+UNITTEST_ASSERT_STR_MEMO_SPACES_ANDROID = """ぴよログ-2024年12月
+----------
 2025/1/2(木)
 あかさん (3か月7日)
 
@@ -148,7 +153,7 @@ UNITTEST_ASSERT_STR_MEMO_SPACES_ANDROID = """----------
 
 def test_parse_record_contains_date_memo_final():
     # Arrange
-    parser = PiyoLogParserMonth()
+    parser = PiyoLogParserMonth(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR_MEMO_FINAL)
@@ -164,7 +169,7 @@ def test_parse_record_contains_date_memo_final():
 
 def test_parse_record_contains_date_memo_middle():
     # Arrange
-    parser = PiyoLogParserMonth()
+    parser = PiyoLogParserMonth(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR_MEMO_MIDDLE)
@@ -180,7 +185,7 @@ def test_parse_record_contains_date_memo_middle():
 
 def test_parse_record_contains_multiline():
     # Arrange
-    parser = PiyoLogParserMonth()
+    parser = PiyoLogParserMonth(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR_MEMO_MULTILINE)
@@ -199,7 +204,7 @@ def test_parse_record_contains_multiline():
 
 def test_parse_record_contains_hhmm():
     # Arrange
-    parser = PiyoLogParserMonth()
+    parser = PiyoLogParserMonth(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR_MEMO_HHMM)
@@ -216,7 +221,7 @@ def test_parse_record_contains_hhmm():
 
 def test_parse_record_contains_space():
     # Arrange
-    parser = PiyoLogParserMonth()
+    parser = PiyoLogParserMonth(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR_MEMO_SPACES)
@@ -233,7 +238,7 @@ def test_parse_record_contains_space():
 
 def test_parse_record_contains_space_android():
     # Arrange
-    parser = PiyoLogParserMonth()
+    parser = PiyoLogParserMonth(os=ParserOSType.android)
 
     # Act
     record = parser.parse_str(UNITTEST_ASSERT_STR_MEMO_SPACES_ANDROID)

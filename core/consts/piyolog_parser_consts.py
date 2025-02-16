@@ -1,3 +1,5 @@
+PIYOLOG_DELLIMITER_PLACEHOLDER = "$"
+
 PIYOLOG_EXPORT_FILE_DELIMITER = "   "
 """ぴよログファイルのエクスポートファイルのデリミタ。
 iOS版とAndroid版で異なる。

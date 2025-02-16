@@ -1,7 +1,11 @@
 from datetime import date, datetime, timedelta
 from io import StringIO
 import re
-from core.consts.piyolog_parser_consts import PIYOLOG_EXPORT_FILE_DELIMITER
+from core.consts.piyolog_parser_consts import (
+    PIYOLOG_EXPORT_FILE_DELIMITER,
+    PIYOLOG_EXPORT_FILE_ANDROID_MEMO_DELIMITER,
+    PIYOLOG_DELLIMITER_PLACEHOLDER,
+)
 from core.enum.parser_os_type import ParserOSType
 from core.piyolog_parser.piyolog_parser_base import PiyoLogParserBase
 from model.piyolog_day_record import PiyoLogDayRecord
@@ -147,9 +151,55 @@ class PiyoLogParserDay(PiyoLogParserBase):
 
         return ret
 
+    def _parse_record_part_android_preprocess(self, record_part: str) -> str:
+        temp_record_part = record_part
+
+        # 時刻・その他で分割
+        test_split = temp_record_part.split(PIYOLOG_EXPORT_FILE_DELIMITER)
+
+        # OSに応じて2つ目以降の要素を処理
+        if self.os == ParserOSType.ios:
+            # iOSは特段の処理なし
+            return record_part
+        elif self.os == ParserOSType.android:
+            # デリミタを置き換え
+            for i, test_part in enumerate(test_split):
+                test_split[i] = test_part.replace(
+                    PIYOLOG_EXPORT_FILE_ANDROID_MEMO_DELIMITER,
+                    PIYOLOG_DELLIMITER_PLACEHOLDER,
+                )
+
+            # Android版デリミタで各要素を分割
+            for i, test_part in enumerate(test_split[1:]):
+                test_split[i + 1] = test_part.split(
+                    PIYOLOG_EXPORT_FILE_ANDROID_MEMO_DELIMITER
+                )
+
+            # リストをフラットに
+            flattened_list = []
+            for item in test_split:
+                if isinstance(item, list):
+                    flattened_list.extend(item)
+                else:
+                    flattened_list.append(item)
+
+            flattened_list = [
+                item.replace(
+                    PIYOLOG_DELLIMITER_PLACEHOLDER, PIYOLOG_EXPORT_FILE_DELIMITER
+                )
+                for item in flattened_list
+            ]
+            # デリミタで結合
+            record_part = PIYOLOG_EXPORT_FILE_DELIMITER.join(flattened_list)
+            return record_part
+
     def _parse_record_part(
         self, base_date: date, record_part: str
     ) -> list[PiyoLogDayRecord]:
+        if self.os == ParserOSType.android:
+            # Androidの場合、プリプロセス
+            record_part = self._parse_record_part_android_preprocess(record_part)
+
         # まさか、自力でエスケープを!?
         # 0 スペースを$に変換
         record_part = record_part.replace(PIYOLOG_EXPORT_FILE_DELIMITER, "$")
@@ -201,10 +251,15 @@ class PiyoLogParserDay(PiyoLogParserBase):
 
         records = [PIYOLOG_EXPORT_FILE_DELIMITER.join(row) for row in parsed_list]
 
+        # パース処理はiOSとして行う
+        current_os_type = self.os
+        self.os = ParserOSType.ios
         ret = [
             self.parse_record_line(base_date, record)
             for record in records
             if record.strip()
         ]
+        # OS設定を戻す
+        self.os = current_os_type
 
         return ret

@@ -1,6 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 
+from core.enum.parser_os_type import ParserOSType
 from core.piyolog_parser.piyolog_parser_month import PiyoLogParserMonth
 
 
@@ -12,7 +13,7 @@ def test_parse_202502_actual_android():
         test_str = f.read()
 
     # Act
-    parser = PiyoLogParserMonth()
+    parser = PiyoLogParserMonth(os=ParserOSType.android)
     month_data = parser.parse_str(test_str)
 
     # Assert
@@ -21,9 +22,7 @@ def test_parse_202502_actual_android():
     # 2/1
     assert month_data[0].summary.formula_count == 5
     assert month_data[0].summary.formula_total_amount == 880
-    assert (
-        month_data[0].summary.sleep_duration == timedelta(hours=13, minutes=30).seconds
-    )
+    assert month_data[0].summary.sleep_duration == timedelta(hours=13, minutes=30)
     assert month_data[0].summary.pee_count == 6
     assert month_data[0].summary.poo_count == 1
 
@@ -45,8 +44,6 @@ def test_parse_202502_actual_ios():
     # 2/1
     assert month_data[0].summary.formula_count == 5
     assert month_data[0].summary.formula_total_amount == 880
-    assert (
-        month_data[0].summary.sleep_duration == timedelta(hours=13, minutes=30).seconds
-    )
+    assert month_data[0].summary.sleep_duration == timedelta(hours=13, minutes=30)
     assert month_data[0].summary.pee_count == 6
     assert month_data[0].summary.poo_count == 1

@@ -14,6 +14,9 @@ class PiyoLogParserMonth(PiyoLogParserBase):
         super().__init__(os=os)
 
     def parse_str(self, input_str: str) -> list[PiyoLogDayRecord]:
+        # OSの判別
+        if input_str.startswith("ぴよログ"):
+            self.os = ParserOSType.android
 
         record_str_list = input_str.split("----------")
 
@@ -24,7 +27,7 @@ class PiyoLogParserMonth(PiyoLogParserBase):
             if (record_str.strip() and re.match(pattern, record_str))
         ]
 
-        day_parser = PiyoLogParserDay()
+        day_parser = PiyoLogParserDay(self.os)
         ret = [day_parser.parse_str(record_str) for record_str in record_str_list]
 
         return ret
