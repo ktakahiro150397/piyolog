@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from core.consts.piyolog_parser_consts import PIYOLOG_EXPORT_FILE_DELIMITER
+from core.enum.parser_os_type import ParserOSType
 from model.piyolog_day_record import PiyoLogDayRecord
 from model.piyolog_record import PiyoLogRecord
 
@@ -7,14 +8,15 @@ from model.piyolog_record import PiyoLogRecord
 class PiyoLogParserBase:
     """ぴよログファイルパーサーの基底クラス"""
 
-    def __init__(self):
+    def __init__(self, os: ParserOSType = ParserOSType.ios):
+        self.os = os
         pass
 
     def parse_record_line(self, base_date: date, line: str) -> PiyoLogRecord:
         # Split line by 3 spaces
         line_parts = line.split(PIYOLOG_EXPORT_FILE_DELIMITER)
 
-        if len(line_parts) == 2 :
+        if len(line_parts) == 2:
             line_parts.append("")
 
         if len(line_parts) > 3:
