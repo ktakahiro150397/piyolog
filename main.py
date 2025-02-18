@@ -159,7 +159,7 @@ async def retrieve_data():
 
         # MySQLに接続
         conn = mysql.connector.connect(
-            host="db", database="piyolog", user="docker", password="docker"
+            host=os.getenv("PIYOLOG_DATA_DB_HOST"), database=os.getenv("PIYOLOG_DATA_DB_DATABASE"), user=os.getenv("PIYOLOG_DATA_DB_USER"), password=os.getenv("PIYOLOG_DATA_DB_PASSWORD")
         )
         conn.autocommit = False
 
