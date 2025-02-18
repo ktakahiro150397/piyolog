@@ -82,10 +82,10 @@ Googleドライブからぴよログのエクスポートデータを取得し�
 
 `http://localhost:9000`でホストされます。
 
-## ライセンス
-
-TODO : なんでもありライセンスを書く
-
 ## 作成者について
 
-TODO : 自分の宣伝フェイズ
+TODO : 公開用Xアカウントを開設し、ここに書く
+
+## ライセンス
+
+This project is licensed under the MIT License, see the LICENSE file for details.
