@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+EXECUTION_INTERVAL = int(os.getenv("EXECUTION_INTERVAL", 60))
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -84,20 +86,11 @@ drive_service = get_google_drive_service()
 
 
 async def main():
-    previous_process_time = None
     while True:
-        if (
-            not previous_process_time is None
-            and (datetime.now() - previous_process_time).seconds < 60
-        ):
-            logger.debug("Wait for 10 seconds...")
-            await asyncio.sleep(10)
-            continue
-
-        previous_process_time = datetime.now()
         logger.info("Starting retrieve process...")
         await retrieve_data()
         logger.info("Retrieve process complete")
+        await asyncio.sleep(EXECUTION_INTERVAL)
 
 
 async def retrieve_data():
