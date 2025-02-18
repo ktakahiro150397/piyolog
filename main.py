@@ -1,6 +1,9 @@
 import asyncio
 from datetime import datetime
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -19,8 +22,8 @@ from itertools import groupby
 
 logger = LoggerFactory.getLogger(__name__)
 
-src_dir = "piyolog_data"
-src_drive_dir = "piyolog_data_google_drive"
+# src_dir = os.getenv("DIRECTORY_PATH")
+src_drive_dir = os.getenv("DIRECTORY_PATH")
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
@@ -109,7 +112,7 @@ async def retrieve_data():
             .list(
                 includeItemsFromAllDrives=True,
                 supportsAllDrives=True,
-                q="'1-3jwmeBYEzZpKqWXhDO3ziMq3H2aLQYO' in parents "
+                q=f"'{os.getenv('GOOGLE_DRIVE_DIR_ID')}' in parents "
                 "and trashed = false",
                 orderBy="createdTime desc",
                 fields="files(id, name, createdTime)",
