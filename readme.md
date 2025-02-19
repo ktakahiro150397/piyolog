@@ -84,7 +84,7 @@ Googleドライブからぴよログのエクスポートデータを取得し�
 
 ## 作成者について
 
-TODO : 公開用Xアカウントを開設し、ここに書く
+[https://x.com/yanelmo3356?s=21&t=Xzg8KkeyECoX59vLhaeTIQ](https://x.com/yanelmo3356?s=21&t=Xzg8KkeyECoX59vLhaeTIQ)
 
 ## ライセンス
 
