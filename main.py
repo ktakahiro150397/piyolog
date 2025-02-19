@@ -1,6 +1,11 @@
 import asyncio
 from datetime import datetime
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+EXECUTION_INTERVAL = int(os.getenv("EXECUTION_INTERVAL", 60))
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -19,8 +24,8 @@ from itertools import groupby
 
 logger = LoggerFactory.getLogger(__name__)
 
-src_dir = "piyolog_data"
-src_drive_dir = "piyolog_data_google_drive"
+# src_dir = os.getenv("DIRECTORY_PATH")
+src_drive_dir = os.getenv("DIRECTORY_PATH")
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
@@ -81,20 +86,11 @@ drive_service = get_google_drive_service()
 
 
 async def main():
-    previous_process_time = None
     while True:
-        if (
-            not previous_process_time is None
-            and (datetime.now() - previous_process_time).seconds < 60
-        ):
-            logger.debug("Wait for 10 seconds...")
-            await asyncio.sleep(10)
-            continue
-
-        previous_process_time = datetime.now()
         logger.info("Starting retrieve process...")
         await retrieve_data()
         logger.info("Retrieve process complete")
+        await asyncio.sleep(EXECUTION_INTERVAL)
 
 
 async def retrieve_data():
@@ -109,7 +105,7 @@ async def retrieve_data():
             .list(
                 includeItemsFromAllDrives=True,
                 supportsAllDrives=True,
-                q="'1-3jwmeBYEzZpKqWXhDO3ziMq3H2aLQYO' in parents "
+                q=f"'{os.getenv('GOOGLE_DRIVE_DIR_ID')}' in parents "
                 "and trashed = false",
                 orderBy="createdTime desc",
                 fields="files(id, name, createdTime)",
@@ -163,7 +159,7 @@ async def retrieve_data():
 
         # MySQLに接続
         conn = mysql.connector.connect(
-            host="db", database="piyolog", user="docker", password="docker"
+            host=os.getenv("PIYOLOG_DATA_DB_HOST"), database=os.getenv("PIYOLOG_DATA_DB_DATABASE"), user=os.getenv("PIYOLOG_DATA_DB_USER"), password=os.getenv("PIYOLOG_DATA_DB_PASSWORD")
         )
         conn.autocommit = False
 
