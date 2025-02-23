@@ -3,9 +3,14 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 
+from core.retriever.retrieve_from_sync import RetrievePiyoLogAPI
+
 load_dotenv()
 
 EXECUTION_INTERVAL = int(os.getenv("EXECUTION_INTERVAL", 60))
+ALL_DATA_EXECUTION_INTERVAL = int(
+    os.getenv("ALL_DATA_EXECUTION_INTERVAL", 60 * 60 * 12)
+)
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -24,142 +29,42 @@ from itertools import groupby
 
 logger = LoggerFactory.getLogger(__name__)
 
-# src_dir = os.getenv("DIRECTORY_PATH")
-src_drive_dir = os.getenv("DIRECTORY_PATH")
-
-SCOPES = ["https://www.googleapis.com/auth/drive"]
-
-
-def clear_dir(dir_path: str):
-    for file in os.listdir(dir_path):
-        if file.endswith(".txt"):
-            os.remove(os.path.join(dir_path, file))
-
-
-def get_google_drive_service() -> googleapiclient.discovery.Resource:
-    logger.info("Create Google Drive service")
-
-    # Credentialの取得または作成
-    if os.path.exists("token.json"):
-        logger.info("Use existing token.json")
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-
-        # If there are no (valid) credentials available, let the user log in.
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-    else:
-        logger.info("Create new token.json")
-        flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-        creds = flow.run_local_server()
-
-    # Save the credentials for the next run
-    with open("token.json", "w") as token:
-        token.write(creds.to_json())
-
-    service = build("drive", "v3", credentials=creds)
-
-    logger.info("Google Drive service is created")
-    return service
-
-
-def get_google_drive_file(
-    service: googleapiclient.discovery.Resource, filename: str, file_id: str
-):
-    request = service.files().get_media(fileId=file_id)
-    fh = open(f"{src_drive_dir}/{filename}", "wb")
-    downloader = googleapiclient.http.MediaIoBaseDownload(fh, request)
-    done = False
-    while done is False:
-        status, done = downloader.next_chunk()
-    fh.close()
-    logger.info(f"Download file: {filename}")
-
-
-def delete_google_drive_file(service: googleapiclient.discovery.Resource, file_id: str):
-    service.files().delete(
-        fileId=file_id,
-    ).execute()
-    logger.debug(f"Delete file: {file_id}")
-
-
-drive_service = get_google_drive_service()
-
 
 async def main():
+    execution_interval_sum = 0
     while True:
-        logger.info("Starting retrieve process...")
-        await retrieve_data()
-        logger.info("Retrieve process complete")
-        await asyncio.sleep(EXECUTION_INTERVAL)
+        if execution_interval_sum >= ALL_DATA_EXECUTION_INTERVAL:
+            # 全データ取得の実行
+            logger.info("全データ取得を開始")
+            await retrieve_data(is_all_data=True)
+            logger.info("全データ取得が完了")
+            execution_interval_sum = 0
+            await asyncio.sleep(EXECUTION_INTERVAL)
+        else:
+            # データ取得の実行
+            logger.info("データ取得を開始")
+            await retrieve_data()
+            logger.info("データ取得を完了")
+            execution_interval_sum += EXECUTION_INTERVAL
+            await asyncio.sleep(EXECUTION_INTERVAL)
 
 
-async def retrieve_data():
+async def retrieve_data(is_all_data=False):
     try:
-        file_list = []
+        data: list[PiyoLogDayRecord] = []
 
-        clear_dir(src_drive_dir)
-
-        # マイドライブ > ぴよログ 以下のファイル一覧を取得
-        results = (
-            drive_service.files()
-            .list(
-                includeItemsFromAllDrives=True,
-                supportsAllDrives=True,
-                q=f"'{os.getenv('GOOGLE_DRIVE_DIR_ID')}' in parents "
-                "and trashed = false",
-                orderBy="createdTime desc",
-                fields="files(id, name, createdTime)",
-                pageToken=None,
-            )
-            .execute()
-        )
-
-        files = results["files"]
-        files.sort(key=lambda x: x["name"])
-
-        logger.info(f"Google Drive file count: {len(files)}")
-
-        # ファイル名ごとに、最も更新日付の新しいものを取得
-        grouped_by_filename = {
-            key: list(group) for key, group in groupby(files, key=lambda x: x["name"])
-        }
-
-        # キーごとに作成日時でソート
-        for key in grouped_by_filename.keys():
-            grouped_by_filename[key].sort(key=lambda x: x["createdTime"], reverse=True)
-
-        # ドライブからファイルをダウンロード
-        for key in grouped_by_filename.keys():
-            file = grouped_by_filename[key][0]
-            get_google_drive_file(drive_service, file["name"], file["id"])
-            file_list.append(f"{src_drive_dir}/{file['name']}")
-
-        # for dirpath, dirnames, filenames in os.walk(src_dir):
-        #     for filename in filenames:
-        #         # フルパスで取得する場合：
-        #         file_path = os.path.join(dirpath, filename)
-        #         file_list.append(file_path)
-
-        if len(file_list) == 0:
-            logger.info("No files to parse")
-            return
-
-        parser = PiyoLogParserMonth()
-
-        month_data_list: list[PiyoLogDayRecord] = []
-        for file in file_list:
-            logger.info(f"Parsing file: {file}")
-
-            with open(file, "r") as f:
-                content = f.read()
-                month_data = parser.parse_str(content)
-                month_data_list.append(month_data)
-
-        logger.info("Parse completed")
+        retriver = RetrievePiyoLogAPI()
+        if is_all_data:
+            data = retriver.retrieve_from_force_sync_to_app_endpoint()
+        else:
+            data = retriver.retrueve_from_sync_endpoint()
 
         # MySQLに接続
         conn = mysql.connector.connect(
-            host=os.getenv("PIYOLOG_DATA_DB_HOST"), database=os.getenv("PIYOLOG_DATA_DB_DATABASE"), user=os.getenv("PIYOLOG_DATA_DB_USER"), password=os.getenv("PIYOLOG_DATA_DB_PASSWORD")
+            host=os.getenv("PIYOLOG_DATA_DB_HOST"),
+            database=os.getenv("PIYOLOG_DATA_DB_DATABASE"),
+            user=os.getenv("PIYOLOG_DATA_DB_USER"),
+            password=os.getenv("PIYOLOG_DATA_DB_PASSWORD"),
         )
         conn.autocommit = False
 
@@ -168,24 +73,12 @@ async def retrieve_data():
 
             repo: PiyologRepositoryBase = PiyologRepositoryMySql(conn)
 
-            for month_data in month_data_list:
-                for day_data in month_data:
-                    repo.delete_insert_piyolog(day_data)
-
-            # データ登録後、一時ファイルを削除
-            clear_dir(src_drive_dir)
-
-            # Google Driveからファイルを削除
-            for key in grouped_by_filename.keys():
-                for file in grouped_by_filename[key]:
-                    logger.info(f"Delete file: {file['name']} / {file['id']}")
-                    delete_google_drive_file(drive_service, file["id"])
-
+            for day_data in data:
+                repo.delete_insert_piyolog(day_data)
         else:
             logger.error("Failed to connect MySQL database")
 
         conn.close()
-        logger.info("MySQL connection is closed")
     except Exception as e:
         logger.error(e, exc_info=True)
     finally:
