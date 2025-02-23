@@ -32,4 +32,15 @@ class PiyoLogRecord:
             self.additional_record_data,
             self.record_memo,
         )
-    
+
+    @classmethod
+    def from_api(self, api_data: dict):
+        self.date = datetime.strptime(api_data["datetime"], "%Y%m%d %H:%M")
+
+        # TODO : イベント種類のマッピング
+        self.record_type = api_data["event_id"]
+        self.record_memo = api_data["memo"]
+
+        self.additional_record_data = ""
+
+        return self
