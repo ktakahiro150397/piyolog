@@ -2,7 +2,8 @@
     "python.testing.pytestArgs": [
         "tests/test_ios",
         "tests/test_android",
-        "tests/test_actual"
+        "tests/test_actual",
+        "tests/test_api"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true

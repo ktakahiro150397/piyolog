@@ -26,35 +26,14 @@ client_token = os.getenv("PIYOLOG_API_CLIENT_TOKEN")
 async def main():
     logger.info("piyolog api access")
 
-    # /syncを呼び出す
-    url = "https://api2.piyolog.com/sync"
+    # retriver = RetrievePiyoLogAPI()
+    # sync_endpoint = retriver.retrueve_from_sync_endpoint()
+    # force_sync_to_app_endpoint = retriver.retrieve_from_force_sync_to_app_endpoint()
 
-    headers = {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "User-Agent": "PiyoLog/505 CFNetwork/1568.200.51 Darwin/24.1.0",
-        "Accept-Language": "ja",
-        "Accept-Encoding": "gzip, deflate, br",
-    }
+    # logger.debug(sync_endpoint)
+    # logger.debug(force_sync_to_app_endpoint)
 
-    payload = {
-        "client_token": client_token,
-        "app": "PiyoLog for iPhone",
-        "api_version": 2.1000000000000001,
-        "minor_version": 6808,
-        "user_id": user_id,
-        "main_version": 1,
-        "client_id": 2,
-    }
-
-    retriver = RetrievePiyoLogAPI()
-    sync_endpoint = retriver.retrueve_from_sync_endpoint()
-    force_sync_to_app_endpoint = retriver.retrieve_from_force_sync_to_app_endpoint()
-
-    logger.debug(sync_endpoint)
-    logger.debug(force_sync_to_app_endpoint)
-
-    logger.info("piyolog api access end")
+    # logger.info("piyolog api access end")
 
     # POSTリクエスト
     # response = requests.post(url, headers=headers, json=payload)
@@ -64,33 +43,37 @@ async def main():
 
     # logger.debug(response.json())
 
-    # # ローカルファイルから読み込む
-    # with open("docs/force_sync_to_app.json", "r") as f:
-    #     response = f.read()
+    # ローカルファイルから読み込む
+    with open("docs/force_sync_to_app.json", "r") as f:
+        response = f.read()
 
-    # response = json.loads(response)
+    response = json.loads(response)
 
-    # parser = PiyologParserAPIData()
-    # data_list = parser.parse_record(response)
+    # # 20241201のみに絞る
+    # date_filterd = [x for x in response["data"]["baby_event"] if x["date"] == 20241215]
+    # logger.debug(date_filterd)
 
-    # logger.debug(data_list)
+    parser = PiyologParserAPIData()
+    data_list = parser.parse_record(response)
 
-    # # MySQLに接続
-    # conn = mysql.connector.connect(
-    #     host=os.getenv("PIYOLOG_DATA_DB_HOST"),
-    #     database=os.getenv("PIYOLOG_DATA_DB_DATABASE"),
-    #     user=os.getenv("PIYOLOG_DATA_DB_USER"),
-    #     password=os.getenv("PIYOLOG_DATA_DB_PASSWORD"),
-    # )
-    # conn.autocommit = False
+    logger.debug(data_list)
 
-    # if conn.is_connected():
-    #     logger.debug("Connected to MySQL database")
+    # MySQLに接続
+    conn = mysql.connector.connect(
+        host=os.getenv("PIYOLOG_DATA_DB_HOST"),
+        database=os.getenv("PIYOLOG_DATA_DB_DATABASE"),
+        user=os.getenv("PIYOLOG_DATA_DB_USER"),
+        password=os.getenv("PIYOLOG_DATA_DB_PASSWORD"),
+    )
+    conn.autocommit = False
 
-    #     repo: PiyologRepositoryBase = PiyologRepositoryMySql(conn)
+    if conn.is_connected():
+        logger.debug("Connected to MySQL database")
 
-    #     for day_data in data_list:
-    #         repo.delete_insert_piyolog(day_data)
+        repo: PiyologRepositoryBase = PiyologRepositoryMySql(conn)
+
+        for day_data in data_list:
+            repo.delete_insert_piyolog(day_data)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
+from core.enum.day_log_type import DayLogType
 from logger_factory import LoggerFactory
 from model.piyolog_day_record import PiyoLogDayRecord
 from model.piyolog_record import PiyoLogRecord
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 logger = LoggerFactory.getLogger(__name__)
 
@@ -47,6 +48,105 @@ class PiyologParserAPIData:
             for record in day_records:
                 add_record_data = PiyoLogRecord.from_api(record)
                 add_data.records.append(add_record_data)
+
+            # サマリーの割り当て
+            add_data.summary.bleast_feed_time_left = sum(
+                [
+                    record["left_time"]
+                    for record in baby_event
+                    if (
+                        record["date"] == day_log_data["date"]
+                        and record["deleted"] == False
+                        and record["type"] == 1
+                    )
+                ]
+            )
+            add_data.summary.bleast_feed_time_right = sum(
+                [
+                    record["right_time"]
+                    for record in baby_event
+                    if (
+                        record["date"] == day_log_data["date"]
+                        and record["deleted"] == False
+                        and record["type"] == 1
+                    )
+                ]
+            )
+            add_data.summary.formula_count = len(
+                [
+                    record
+                    for record in baby_event
+                    if (
+                        record["date"] == day_log_data["date"]
+                        and record["deleted"] == False
+                        and record["type"] == 2
+                    )
+                ]
+            )
+            add_data.summary.formula_total_amount = sum(
+                [
+                    record["amount"]
+                    for record in baby_event
+                    if (
+                        record["date"] == day_log_data["date"]
+                        and record["deleted"] == False
+                        and record["type"] == 2
+                    )
+                ]
+            )
+            add_data.summary.pee_count = len(
+                [
+                    record
+                    for record in baby_event
+                    if (
+                        record["date"] == day_log_data["date"]
+                        and record["deleted"] == False
+                        and record["type"] == 6
+                    )
+                ]
+            )
+            add_data.summary.poo_count = len(
+                [
+                    record
+                    for record in baby_event
+                    if (
+                        record["date"] == day_log_data["date"]
+                        and record["deleted"] == False
+                        and record["type"] == 7
+                    )
+                ]
+            )
+
+            # 「ねる」「起きる」のレコードを抜き出す
+            sleep_records = [
+                record
+                for record in add_data.records
+                if (
+                    record.record_type == DayLogType.get_type_name(4)
+                    or record.record_type == DayLogType.get_type_name(5)
+                )
+            ]
+
+            for index, sleep_elem in enumerate(sleep_records):
+                if sleep_elem.record_type == DayLogType.get_type_name(5):
+                    if index == 0:
+                        # 起きるレコードが最初の場合
+                        add_data.summary.sleep_duration += (
+                            sleep_elem.date - add_data.date
+                        )
+                    elif index > 0:
+                        # 起きるレコード：これより前の「ねる」レコードを取得
+                        sleep_start = sleep_records[index - 1]
+                        add_data.summary.sleep_duration += (
+                            sleep_elem.date - sleep_start.date
+                        )
+
+                # 最後のレコードが「ねる」の場合
+                if index == len(sleep_records) - 1:
+                    if sleep_elem.record_type == DayLogType.get_type_name(4):
+                        add_data.summary.sleep_duration += (
+                            add_data.date + timedelta(hours=24) - sleep_elem.date
+                        )
 
             ret.append(add_data)
 
