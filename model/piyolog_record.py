@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
+from core.enum.day_log_type import DayLogType
+
 
 @dataclass
 class PiyoLogRecord:
@@ -34,13 +36,12 @@ class PiyoLogRecord:
         )
 
     @classmethod
-    def from_api(self, api_data: dict):
-        self.date = datetime.strptime(api_data["datetime"], "%Y%m%d %H:%M")
+    def from_api(cls, api_data: dict):
+        rec = cls()
 
-        # TODO : イベント種類のマッピング
-        self.record_type = api_data["event_id"]
-        self.record_memo = api_data["memo"]
+        rec.date = datetime.strptime(api_data["datetime"], "%Y%m%d %H:%M")
+        rec.record_type = DayLogType.get_type_name(api_data["type"])
+        rec.record_memo = api_data["memo"]
+        rec.additional_record_data = DayLogType.get_type_additional_memo(api_data)
 
-        self.additional_record_data = ""
-
-        return self
+        return rec

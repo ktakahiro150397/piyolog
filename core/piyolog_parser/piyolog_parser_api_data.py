@@ -1,6 +1,9 @@
+from logger_factory import LoggerFactory
 from model.piyolog_day_record import PiyoLogDayRecord
 from model.piyolog_record import PiyoLogRecord
 from datetime import date, datetime
+
+logger = LoggerFactory.getLogger(__name__)
 
 
 class PiyologParserAPIData:
@@ -15,10 +18,14 @@ class PiyologParserAPIData:
         baby_event = data["data"]["baby_event"]
 
         for day_log_data in day_log:
+            if day_log_data["deleted"] == True:
+                continue
+
             add_data = PiyoLogDayRecord()
 
             # 日付
             add_data.date = datetime.strptime(str(day_log_data["date"]), "%Y%m%d")
+            logger.debug(str(day_log_data["date"]))
 
             # 日記
             add_data.daily_memo = day_log_data["diary"]
@@ -27,7 +34,10 @@ class PiyologParserAPIData:
             day_records = [
                 record
                 for record in baby_event
-                if record["date"] == day_log_data["date"]
+                if (
+                    record["date"] == day_log_data["date"]
+                    and record["deleted"] == False
+                )
             ]
 
             # 時間でソート
@@ -35,8 +45,8 @@ class PiyologParserAPIData:
 
             # レコードを追加
             for record in day_records:
-                add_record = PiyoLogRecord.from_api(record)
-                add_data.records.append(add_record)
+                add_record_data = PiyoLogRecord.from_api(record)
+                add_data.records.append(add_record_data)
 
             ret.append(add_data)
 

@@ -1,11 +1,18 @@
 import asyncio
+import itertools
 import json
+import mysql
 import requests
 from datetime import datetime
 import os
 from dotenv import load_dotenv
 from core.piyolog_parser.piyolog_parser_api_data import PiyologParserAPIData
 from logger_factory import LoggerFactory
+from functools import reduce
+import mysql.connector
+
+from repository.piyolog_repository_base import PiyologRepositoryBase
+from repository.piyolog_repository_mysql import PiyologRepositoryMySql
 
 load_dotenv()
 
@@ -48,15 +55,32 @@ async def main():
     # logger.debug(response.json())
 
     # ローカルファイルから読み込む
-    with open("docs/response.json", "r") as f:
+    with open("docs/force_sync_to_app.json", "r") as f:
         response = f.read()
 
     response = json.loads(response)
 
     parser = PiyologParserAPIData()
-    data = parser.parse_record(response)
+    data_list = parser.parse_record(response)
 
-    logger.debug(data)
+    logger.debug(data_list)
+
+    # MySQLに接続
+    conn = mysql.connector.connect(
+        host=os.getenv("PIYOLOG_DATA_DB_HOST"),
+        database=os.getenv("PIYOLOG_DATA_DB_DATABASE"),
+        user=os.getenv("PIYOLOG_DATA_DB_USER"),
+        password=os.getenv("PIYOLOG_DATA_DB_PASSWORD"),
+    )
+    conn.autocommit = False
+
+    if conn.is_connected():
+        logger.debug("Connected to MySQL database")
+
+        repo: PiyologRepositoryBase = PiyologRepositoryMySql(conn)
+
+        for day_data in data_list:
+            repo.delete_insert_piyolog(day_data)
 
 
 if __name__ == "__main__":
