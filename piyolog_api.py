@@ -7,6 +7,7 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 from core.piyolog_parser.piyolog_parser_api_data import PiyologParserAPIData
+from core.retriever.retrieve_from_sync import RetrievePiyoLogAPI
 from logger_factory import LoggerFactory
 from functools import reduce
 import mysql.connector
@@ -46,6 +47,15 @@ async def main():
         "client_id": 2,
     }
 
+    retriver = RetrievePiyoLogAPI()
+    sync_endpoint = retriver.retrueve_from_sync_endpoint()
+    force_sync_to_app_endpoint = retriver.retrieve_from_force_sync_to_app_endpoint()
+
+    logger.debug(sync_endpoint)
+    logger.debug(force_sync_to_app_endpoint)
+
+    logger.info("piyolog api access end")
+
     # POSTリクエスト
     # response = requests.post(url, headers=headers, json=payload)
 
@@ -54,33 +64,33 @@ async def main():
 
     # logger.debug(response.json())
 
-    # ローカルファイルから読み込む
-    with open("docs/force_sync_to_app.json", "r") as f:
-        response = f.read()
+    # # ローカルファイルから読み込む
+    # with open("docs/force_sync_to_app.json", "r") as f:
+    #     response = f.read()
 
-    response = json.loads(response)
+    # response = json.loads(response)
 
-    parser = PiyologParserAPIData()
-    data_list = parser.parse_record(response)
+    # parser = PiyologParserAPIData()
+    # data_list = parser.parse_record(response)
 
-    logger.debug(data_list)
+    # logger.debug(data_list)
 
-    # MySQLに接続
-    conn = mysql.connector.connect(
-        host=os.getenv("PIYOLOG_DATA_DB_HOST"),
-        database=os.getenv("PIYOLOG_DATA_DB_DATABASE"),
-        user=os.getenv("PIYOLOG_DATA_DB_USER"),
-        password=os.getenv("PIYOLOG_DATA_DB_PASSWORD"),
-    )
-    conn.autocommit = False
+    # # MySQLに接続
+    # conn = mysql.connector.connect(
+    #     host=os.getenv("PIYOLOG_DATA_DB_HOST"),
+    #     database=os.getenv("PIYOLOG_DATA_DB_DATABASE"),
+    #     user=os.getenv("PIYOLOG_DATA_DB_USER"),
+    #     password=os.getenv("PIYOLOG_DATA_DB_PASSWORD"),
+    # )
+    # conn.autocommit = False
 
-    if conn.is_connected():
-        logger.debug("Connected to MySQL database")
+    # if conn.is_connected():
+    #     logger.debug("Connected to MySQL database")
 
-        repo: PiyologRepositoryBase = PiyologRepositoryMySql(conn)
+    #     repo: PiyologRepositoryBase = PiyologRepositoryMySql(conn)
 
-        for day_data in data_list:
-            repo.delete_insert_piyolog(day_data)
+    #     for day_data in data_list:
+    #         repo.delete_insert_piyolog(day_data)
 
 
 if __name__ == "__main__":
