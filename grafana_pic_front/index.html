@@ -1,0 +1,22 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Image Update</title>  
+</head>  
+<body>  
+    <img id="image" src="http://example.com/image.jpg" alt="Image">  
+    
+    <script>  
+        function updateImage() {  
+            var imageUrl = "http://pic_server/latest_pic?width=1920&height=1080"; // URL of the image you want to display  
+            document.getElementById("image").src = imageUrl + "?timestamp=" + new Date().getTime(); // Add timestamp parameter to force browser to reload the image  
+            alert("updated!")
+        }
+        
+        setInterval(updateImage, 30 * 1000); // Update image every 5 seconds (5000 milliseconds)
+    </script>  
+</body>  
+</html>  
