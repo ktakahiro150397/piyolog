@@ -1,10 +1,6 @@
 
-import asyncio
 from pathlib import Path
 from time import sleep
-from weakref import proxy
-from playwright.async_api import async_playwright
-from playwright.sync_api import sync_playwright
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
@@ -25,6 +21,8 @@ class GetLatestPic:
     def get_latest_pic_from_url_selenium(self,url:str,width:int,height:int) -> Path:
         options = Options()
         options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-gpu")
         
         # プロキシ環境の場合、no_proxy=localhost,127.0.0.1の設定が必要
         # options.add_argument("--proxy-server=http://192.168.11.10:3128")

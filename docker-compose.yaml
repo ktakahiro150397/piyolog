@@ -30,6 +30,12 @@ services:
       dockerfile: ./Dockerfile
     container_name: retriever
     restart: always
+  pic_server:
+    build:
+      context: ./grafana_pic_server
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
 
 volumes:
   db_data:
