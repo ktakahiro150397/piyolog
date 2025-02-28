@@ -1,8 +1,8 @@
 FROM python:3.12-slim-bullseye
 
-ENV http_proxy=http://192.168.11.10:3128
-ENV https_proxy=http://192.168.11.10:3128
-ENV no_proxy=localhost,127.0.0.1
+# ENV http_proxy=http://192.168.11.10:3128
+# ENV https_proxy=http://192.168.11.10:3128
+# ENV no_proxy=localhost,127.0.0.1
 
 
 RUN apt-get update
@@ -19,7 +19,7 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
     && apt-get update \
     && apt-get install -y --no-install-recommends google-chrome-stable \
     && rm -rf /var/lib/apt/lists/*
-    # && apt-get remove -y google-chrome-stable \
+# && apt-get remove -y google-chrome-stable \
 
 # # Install Chromium and Driver
 # RUN apt-get install -y chromium-browser
